@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# DMENUEDITOR="st -e vim"
+# DMENUEDITOR="st -e nvim"
+DMEDITOR="alacritty -e vim"
+
+# An array of options to choose.
+# You can edit this list to add/remove config files.
+declare -A options
+options[alacritty]="$HOME/.config/alacritty/alacritty.yml"
+options[bash]="$HOME/.bashrc"
+options[dunst]="$HOME/.config/dunst/dunstrc"
+options[i3]="$HOME/.config/i3/config"
+options[neovim]="$HOME/.config/nvim/init.vim"
+options[polybar]="$HOME/.config/polybar/config"
+options[st]="$HOME/st-distrotube/config.def.h"
+options[vim]="$HOME/.vimrc"
+options[xmonad]="$HOME/.xmonad/README.org"
+options[xresources]="$HOME/.Xresources"
+options[zsh]="$HOME/.zshrc"
+
+# Piping the above array into dmenu.
+# We use "printf '%s\n'" to format the array one item to a line.
+choice=$(printf '%s\n' "${!options[@]}" | dmenu -i -l 20 -p 'Edit config:' "$@")
+
+
+# What to do when/if we choose a file to edit.
+if [ "$choice" ]; then
+	cfg=$(printf '%s\n' "${options["${choice}"]}")
+	$DMEDITOR "$cfg"
+
+# What to do if we just escape without choosing anything.
+else
+    echo "Program terminated." && exit 0
+fi
+
